@@ -1,0 +1,5 @@
+C:\Users\Jonas\documents\visual studio 2015\Projects\SDtest\SDtest\obj\Release\JJB.csprojResolveAssemblyReference.cache
+C:\Users\Jonas\documents\visual studio 2015\Projects\SDtest\SDtest\bin\Release\JJB.dll
+C:\Users\Jonas\documents\visual studio 2015\Projects\SDtest\SDtest\bin\Release\JJB.pdb
+C:\Users\Jonas\documents\visual studio 2015\Projects\SDtest\SDtest\obj\Release\JJB.dll
+C:\Users\Jonas\documents\visual studio 2015\Projects\SDtest\SDtest\obj\Release\JJB.pdb
