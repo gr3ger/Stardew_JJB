@@ -1,5 +1,0 @@
-c:\users\jonas\documents\visual studio 2015\Projects\SDtest\SDtest\bin\Debug\SDtest.dll
-c:\users\jonas\documents\visual studio 2015\Projects\SDtest\SDtest\bin\Debug\SDtest.pdb
-c:\users\jonas\documents\visual studio 2015\Projects\SDtest\SDtest\obj\Debug\SDtest.dll
-c:\users\jonas\documents\visual studio 2015\Projects\SDtest\SDtest\obj\Debug\SDtest.pdb
-C:\Users\Jonas\documents\visual studio 2015\Projects\SDtest\SDtest\obj\Debug\SDtest.csprojResolveAssemblyReference.cache
