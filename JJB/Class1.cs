@@ -16,7 +16,7 @@ namespace JJB
 {
     public class Class1 : Mod
     {
-        public static Dictionary<int, object> neededItems = new Dictionary<int, object>();
+        public static Dictionary<int, Dictionary<int, object>> neededItems = new Dictionary<int, Dictionary<int, object>>();
 
         public override void Entry(params object[] objects)
         {
@@ -35,6 +35,15 @@ namespace JJB
                 return;
 
             Item obj = null;
+            if (Game1.activeClickableMenu is GameMenu)
+            {
+                GameMenu gameMenu = (GameMenu)Game1.activeClickableMenu;
+                Log.Verbose("currentTab: " + gameMenu.currentTab);
+                if (gameMenu.currentTab == 0)
+                    obj = (Item)typeof(InventoryPage).GetField("hoveredItem", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((object)(InventoryPage)((List<IClickableMenu>)typeof(GameMenu).GetField("pages", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((object)gameMenu))[0]);
+                if (gameMenu.currentTab == 4)
+                    obj = (Item)typeof(CraftingPage).GetField("hoverItem", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((object)(CraftingPage)((List<IClickableMenu>)typeof(GameMenu).GetField("pages", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((object)gameMenu))[4]);
+            }
             if (Game1.activeClickableMenu is MenuWithInventory)
             {
                 MenuWithInventory menuWithInventory = (MenuWithInventory)Game1.activeClickableMenu;
@@ -42,12 +51,20 @@ namespace JJB
             }
 
             if (obj == null)
-                return;
-
-            if(obj.parentSheetIndex != -1 && neededItems.ContainsKey(obj.parentSheetIndex))
             {
-                drawNeededText((SpriteFont)Game1.smallFont);
+                return;
             }
+
+            Log.Verbose("bundles count: " + neededItems.Count);
+            foreach (int bundleIndex in neededItems.Keys)
+            {
+                Log.Verbose("bundleIndex: "+bundleIndex);
+                if (obj.parentSheetIndex != -1 && neededItems[bundleIndex].ContainsKey(obj.parentSheetIndex))
+                {
+                    drawNeededText((SpriteFont)Game1.smallFont);
+                }
+            }
+
         }
 
         private static void drawNeededText(SpriteFont font)
@@ -58,13 +75,12 @@ namespace JJB
             int width = (int)font.MeasureString(text).X + Game1.tileSize / 2 + 5;
             int height = (int)font.MeasureString(text).Y + Game1.tileSize / 3 + 5;
             int x = Game1.oldMouseState.X - Game1.tileSize / 2 - width;
-            int y = Game1.oldMouseState.Y + Game1.tileSize / 2;
+            int y = Game1.oldMouseState.Y + Game1.tileSize / 2 - height;
             if (x < 0)
                 x = 0;
-            int num5 = y + height;
+
             Viewport viewport = ((GraphicsDeviceManager)Game1.graphics).GraphicsDevice.Viewport;
-            int vportHeight = viewport.Height;
-            if (num5 > vportHeight)
+            if (y + height > viewport.Height)
             {
                 viewport = ((GraphicsDeviceManager)Game1.graphics).GraphicsDevice.Viewport;
                 y = viewport.Height - height;
@@ -85,16 +101,25 @@ namespace JJB
                 List<Bundle> bndl = new List<Bundle>(v.GetType().GetBaseFieldValue<List<Bundle>>(v, "bundles"));
                 foreach (Bundle b in bndl)
                 {
+                    if (!neededItems.ContainsKey(b.bundleIndex))
+                    {
+                        Log.Verbose("adding new bundle: " + b.bundleIndex);
+                        neededItems.Add(b.bundleIndex, new Dictionary<int, object>());
+                    }
+
                     foreach (BundleIngredientDescription ingredient in b.ingredients)
                     {
                         if (ingredient.completed)
                         {
-                            neededItems.Remove(ingredient.index);
+                            neededItems[b.bundleIndex].Remove(ingredient.index);
                             continue;
                         }
 
-                        if (ingredient.index != -1 && !neededItems.ContainsKey(ingredient.index))
-                            neededItems.Add(ingredient.index, null);
+                        if (ingredient.index != -1 && !neededItems[b.bundleIndex].ContainsKey(ingredient.index))
+                        { 
+                            Log.Verbose("Adding needed ingredient: " + ingredient.index);
+                            neededItems[b.bundleIndex].Add(ingredient.index, null);
+                        }
 
                         foreach (Item item in Game1.player.items)
                         {
