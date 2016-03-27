@@ -38,7 +38,6 @@ namespace JJB
             if (Game1.activeClickableMenu is GameMenu)
             {
                 GameMenu gameMenu = (GameMenu)Game1.activeClickableMenu;
-                Log.Verbose("currentTab: " + gameMenu.currentTab);
                 if (gameMenu.currentTab == 0)
                     obj = (Item)typeof(InventoryPage).GetField("hoveredItem", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((object)(InventoryPage)((List<IClickableMenu>)typeof(GameMenu).GetField("pages", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((object)gameMenu))[0]);
                 if (gameMenu.currentTab == 4)
@@ -55,10 +54,8 @@ namespace JJB
                 return;
             }
 
-            Log.Verbose("bundles count: " + neededItems.Count);
             foreach (int bundleIndex in neededItems.Keys)
             {
-                Log.Verbose("bundleIndex: "+bundleIndex);
                 if (obj.parentSheetIndex != -1 && neededItems[bundleIndex].ContainsKey(obj.parentSheetIndex))
                 {
                     drawNeededText((SpriteFont)Game1.smallFont);
@@ -103,7 +100,6 @@ namespace JJB
                 {
                     if (!neededItems.ContainsKey(b.bundleIndex))
                     {
-                        Log.Verbose("adding new bundle: " + b.bundleIndex);
                         neededItems.Add(b.bundleIndex, new Dictionary<int, object>());
                     }
 
@@ -117,7 +113,6 @@ namespace JJB
 
                         if (ingredient.index != -1 && !neededItems[b.bundleIndex].ContainsKey(ingredient.index))
                         { 
-                            Log.Verbose("Adding needed ingredient: " + ingredient.index);
                             neededItems[b.bundleIndex].Add(ingredient.index, null);
                         }
 
