@@ -1,4 +1,4 @@
-# Jiggle Junimo Bundles
+# Jiggly Junimo Bundles
 Stardew Valley mod that jiggles a bundle if you have a matching ingredient.
 It also adds a tooltip to your inventory that says if there's a bundle that needs this ingredient.
 
