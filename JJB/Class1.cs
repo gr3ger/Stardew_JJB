@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using StardewValley;
-using StardewModdingAPI;
-using StardewModdingAPI.Events;
-using StardewValley.Menus;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+using StardewModdingAPI;
+using StardewValley;
+using StardewValley.Menus;
+using System;
+using System.Collections.Generic;
 
 namespace JJB
 {
@@ -15,8 +14,8 @@ namespace JJB
 
         public override void Entry(IModHelper helper)
         {
-            MenuEvents.MenuChanged += Events_UpdateTick;
-            GraphicsEvents.OnPostRenderEvent += Events_DrawTick;
+            Helper.Events.Display.MenuChanged += Events_UpdateTick;
+            Helper.Events.Display.Rendered += Events_DrawTick;
         }
 
         private void Events_DrawTick(object sender, EventArgs e)
@@ -28,11 +27,15 @@ namespace JJB
             if (Game1.activeClickableMenu is GameMenu)
             {
                 GameMenu gameMenu = (GameMenu)Game1.activeClickableMenu;
-                IList<IClickableMenu> pages = this.Helper.Reflection.GetPrivateValue<List<IClickableMenu>>(gameMenu, "pages");
+                var pages = Helper.Reflection.GetField<List<IClickableMenu>>(gameMenu, "pages").GetValue();
                 if (gameMenu.currentTab == 0)
-                    obj = this.Helper.Reflection.GetPrivateValue<Item>(pages[0], "hoveredItem");
+                {
+                    obj = Helper.Reflection.GetField<Item>(pages[0], "hoveredItem").GetValue();
+                }
                 else if (gameMenu.currentTab == 4)
-                    obj = this.Helper.Reflection.GetPrivateValue<Item>(pages[4], "hoverItem");
+                {
+                    obj = Helper.Reflection.GetField<Item>(pages[4], "hoverItem").GetValue();
+                }
             }
             else if (Game1.activeClickableMenu is MenuWithInventory)
             {
@@ -47,7 +50,7 @@ namespace JJB
 
             foreach (int bundleIndex in neededItems.Keys)
             {
-                if (obj.parentSheetIndex != -1 && neededItems[bundleIndex].ContainsKey(obj.parentSheetIndex))
+                if (obj.ParentSheetIndex != -1 && neededItems[bundleIndex].ContainsKey(obj.ParentSheetIndex))
                 {
                     drawNeededText(Game1.smallFont);
                 }
@@ -102,11 +105,11 @@ namespace JJB
                             neededItems[b.bundleIndex].Add(ingredient.index, null);
                         }
 
-                        foreach (Item item in Game1.player.items)
+                        foreach (Item item in Game1.player.Items)
                         {
                             if (item != null)
                             {
-                                if (item.parentSheetIndex == ingredient.index)
+                                if (item.ParentSheetIndex == ingredient.index)
                                 {
                                     b.shake(0.4f);
                                     break;
