@@ -31,12 +31,10 @@ namespace JJB
                 if (gameMenu.currentTab == 0)
                 {
                     obj = Helper.Reflection.GetField<Item>(pages[0], "hoveredItem").GetValue();
-                    Console.WriteLine(obj?.DisplayName);
                 }
                 else if (gameMenu.currentTab == 4)
                 {
                     obj = Helper.Reflection.GetField<Item>(pages[4], "hoverItem").GetValue();
-                    Console.WriteLine(obj?.DisplayName);
                 }
             }
             else if (Game1.activeClickableMenu is MenuWithInventory)
